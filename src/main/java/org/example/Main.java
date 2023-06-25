@@ -35,6 +35,12 @@ public class Main {
         System.out.printf("Execution took %s ms.\n", delta);
     }
 
+    /**
+     * Processes the file of a given Path
+     * Returns a report of the most frequent character of the file
+     * @param path Path of the file
+     * @return String report of the most frequent character of the file
+     */
     private static String processFile(Path path) {
         try {
             var freq = Files.readString(path).chars()
