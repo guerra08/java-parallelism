@@ -7,6 +7,8 @@ Examples and usage of parallelism concepts in modern Java
 - Gradle
 - GraalVM's compilation option
 
+The application processes the files in the  directory, and computes which character is the most frequent for each file.
+
 ## Usage
 
 You can create the files used in the test by executing the following command:
@@ -32,4 +34,9 @@ If you want to test a sequential version, run with the 's' argument:
 
 ```shell
 java -jar build/libs/java-parallelism-1.0-SNAPSHOT.jar s
+```
+
+You can also compile the application to a native executable with GraalVM by running:
+```shell
+./gradlew nativeCompile
 ```
