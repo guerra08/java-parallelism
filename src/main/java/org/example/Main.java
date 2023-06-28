@@ -5,10 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -21,14 +21,10 @@ public class Main {
             Stream<Path> stream;
             if (isParallel) {
                 stream = paths.toList().parallelStream();
-            }
-            else {
+            } else {
                 stream = paths.toList().stream();
             }
-            var result = stream
-                    .filter(p -> Files.isRegularFile(p) && Files.isReadable(p))
-                    .map(Main::processFile)
-                    .collect(Collectors.joining("\n"));
+            var result = stream.filter(p -> Files.isRegularFile(p) && Files.isReadable(p)).map(Main::processFile).collect(Collectors.joining("\n"));
             System.out.println(result);
         }
         var delta = System.currentTimeMillis() - start;
@@ -38,15 +34,14 @@ public class Main {
     /**
      * Processes the file of a given Path
      * Returns a report of the most frequent character of the file
+     *
      * @param path Path of the file
      * @return String report of the most frequent character of the file
      */
     private static String processFile(Path path) {
         try {
-            var freq = Files.readString(path).chars()
-                    .mapToObj(c -> (char) c)
-                    .collect(groupingBy(x -> x, counting()));
-            var maxEntry = Collections.max(freq.entrySet(), Map.Entry.comparingByValue());
+            var freq = Files.readString(path).chars().mapToObj(c -> (char) c).collect(groupingBy(x -> x, counting()));
+            var maxEntry = Collections.max(freq.entrySet(), comparingByValue());
             return String.format("%s -> Char: %s - Freq: %d", path, maxEntry.getKey(), maxEntry.getValue());
         } catch (IOException e) {
             throw new RuntimeException(e);
