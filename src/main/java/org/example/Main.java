@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +39,12 @@ public class Main {
      */
     private static String processFile(Path path) {
         try {
-            var freq = Files.readString(path).chars().mapToObj(c -> (char) c).collect(groupingBy(x -> x, counting()));
-            var maxEntry = Collections.max(freq.entrySet(), comparingByValue());
+            var maxEntry = Files.readString(path).chars()
+                .mapToObj(c -> (char) c)
+                .collect(groupingBy(x -> x, counting()))
+                .entrySet().stream()
+                .max(comparingByValue())
+                .orElseThrow();
             return String.format("%s -> Char: %s - Freq: %d", path, maxEntry.getKey(), maxEntry.getValue());
         } catch (IOException e) {
             throw new RuntimeException(e);
